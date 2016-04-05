@@ -1,49 +1,50 @@
 import * as gulp from 'gulp';
-import {runSequence, task} from './tools/utils';
+import * as runSequence from 'run-sequence';
+import {loadTasks} from './tools/utils';
+import {SEED_TASKS_DIR, PROJECT_TASKS_DIR} from './tools/config';
 
-// --------------
-// Clean (override).
-gulp.task('clean',          done => { task('clean', 'all'  )(done); });
-gulp.task('clean.dev',      done => { task('clean', 'dev'  )(done); });
-gulp.task('clean.prod',     done => { task('clean', 'prod' )(done); });
-gulp.task('check.versions', () =>   { task('check.versions');       });
-gulp.task('build.docs',     () =>   { task('build.docs'    );       });
-gulp.task('serve.docs',     () =>   { task('serve.docs'    );       });
+loadTasks(SEED_TASKS_DIR);
+loadTasks(PROJECT_TASKS_DIR);
+
 
 // --------------
 // Build dev.
-gulp.task('build.dev', done =>
+gulp.task('build.dev', (done: any) =>
   runSequence('clean.dev',
               'tslint',
+              'css-lint',
               'build.assets.dev',
+              'build.html_css',
               'build.js.dev',
               'build.index.dev',
               done));
 
 // --------------
 // Build dev watch.
-gulp.task('build.dev.watch', done =>
+gulp.task('build.dev.watch', (done: any) =>
   runSequence('build.dev',
               'watch.dev',
               done));
 
 // --------------
 // Build e2e.
-gulp.task('build.e2e', done =>
-    runSequence('clean.dev',
-        'tslint',
-        'build.assets.dev',
-        'build.js.e2e',
-        'build.index.dev',
-        done));
+gulp.task('build.e2e', (done: any) =>
+  runSequence('clean.dev',
+              'tslint',
+              'build.assets.dev',
+              'build.js.e2e',
+              'build.index.dev',
+              done));
 
 // --------------
 // Build prod.
-gulp.task('build.prod', done =>
+gulp.task('build.prod', (done: any) =>
   runSequence('clean.prod',
               'tslint',
+              'css-lint',
               'build.assets.prod',
-              'build.html_css.prod',
+              'build.html_css',
+              'copy.js.prod',
               'build.js.prod',
               'build.bundles',
               'build.bundles.app',
@@ -52,56 +53,63 @@ gulp.task('build.prod', done =>
 
 // --------------
 // Build test.
-gulp.task('build.test', done =>
-    runSequence('clean.dev',
-        'tslint',
-        'build.assets.dev',
-        'build.js.test',
-        'build.index.dev',
-        done));
+gulp.task('build.test', (done: any) =>
+  runSequence('clean.dev',
+              'tslint',
+              'build.assets.dev',
+              'build.js.test',
+              'build.index.dev',
+              done));
 
 // --------------
 // Build test watch.
-gulp.task('build.test.watch', done =>
+gulp.task('build.test.watch', (done: any) =>
   runSequence('build.test',
               'watch.test',
               done));
 
 // --------------
+// Build tools.
+gulp.task('build.tools', (done: any) =>
+  runSequence('clean.tools',
+              'build.js.tools',
+              done));
+
+// --------------
 // Docs
-// Disabled until https://github.com/sebastian-lenz/typedoc/issues/162 gets resolved
-gulp.task('docs', done =>
+gulp.task('docs', (done: any) =>
   runSequence('build.docs',
               'serve.docs',
               done));
 
 // --------------
 // Serve dev
-gulp.task('serve.dev', done =>
+gulp.task('serve.dev', (done: any) =>
   runSequence('build.dev',
               'server.start',
-              'watch.serve',
+              'watch.dev',
               done));
 
 // --------------
 // Serve e2e
-gulp.task('serve.e2e', done =>
+gulp.task('serve.e2e', (done: any) =>
   runSequence('build.e2e',
               'server.start',
-              'watch.serve',
+              'watch.e2e',
               done));
+
 
 // --------------
 // Serve prod
-gulp.task('serve.prod', done =>
+gulp.task('serve.prod', (done: any) =>
   runSequence('build.prod',
-              'server.start',
-              'watch.serve',
+              'server.prod',
               done));
+
 
 // --------------
 // Test.
-gulp.task('test', done =>
+gulp.task('test', (done: any) =>
   runSequence('build.test',
               'karma.start',
               done));

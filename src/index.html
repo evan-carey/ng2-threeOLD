@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <base href="<%= APP_BASE %>">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title><%= APP_TITLE %></title>
@@ -11,7 +12,7 @@
 </head>
 <body>
 
-  <app>Loading...</app>
+  <sd-app>Loading...</sd-app>
 
   <script>
   // function.name (all IE)
@@ -20,7 +21,7 @@
   if (!Object.hasOwnProperty('name')) {
     Object.defineProperty(Function.prototype, 'name', {
       get: function() {
-        var matches = this.toString().match(/^\s*function\s*(\S*)\s*\(/);
+        var matches = this.toString().match(/^\s*function\s*((?![0-9])[a-zA-Z0-9_$]*)\s*\(/);
         var name = matches && matches.length > 1 ? matches[1] : "";
         // For better performance only parse once, and then cache the
         // result through a new accessor for repeated access.
@@ -30,7 +31,7 @@
     });
   }
   </script>
-  
+
   <script>
   // Fixes undefined module function in SystemJS bundle
   function module() {}
@@ -40,7 +41,11 @@
   <!-- endinject -->
 
   <% if (ENV === 'dev') { %>
-  <script>System.config(<%= JSON.stringify(SYSTEM_CONFIG) %>)</script>
+  <script>
+    System.config(<%=
+      JSON.stringify(SYSTEM_CONFIG, null, 2)
+    %>)
+  </script>
   <% } %>
 
   <!-- libs:js -->
@@ -58,63 +63,6 @@
     });
   </script>
   <% } %>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r74/three.min.js"></script>
-  <script type="x-shader/x-vertex" id="vert">
-#ifdef GL_ES
-precision highp float;
-#endif
 
-// switch on high precision floats
-		#ifdef GL_ES
-		precision highp float;
-		#endif
-		
-		uniform float amplitude;
-		attribute float displacement;
-		varying vec3 vNormal;
-		varying vec3 vColor;
-		void main() {
-			
-			vNormal = normal;
-			vColor = color;
-			// multiply our displacement by the
-			// amplitude. The amp will get animated
-			// so we'll have animated displacement
-			vec3 newPosition = position + 
-							   normal * 
-							   vec3(displacement *
-									amplitude);
-
-			gl_Position = projectionMatrix *
-						  modelViewMatrix *
-						  vec4(newPosition,1.0);
-		}
-</script>
-<script type="x-shader/x-fragment" id="frag">
-#ifdef GL_ES
-		precision highp float;
-		#endif
-		
-		// same name and type as VS
-		varying vec3 vNormal;
-		varying vec3 vColor;
-		void main() {
-
-			// calc the dot product and clamp
-			// 0 -> 1 rather than -1 -> 1
-			vec3 light = vec3(0.0,0.0,1.0);
-			
-			// ensure it's normalized
-			light = normalize(light);
-			
-			float dProd = max(0.8, dot(vNormal, light));
-			//float dProd = dot(vNormal, light);
-			
-			// feed into our frag colour
-			gl_FragColor = vec4(vColor.x * dProd, vColor.y * dProd, vColor.z * dProd, 1.0);
-			//gl_FragColor = vec4(dProd, dProd, dProd, 1.0);
-			
-		}
-</script>
 </body>
 </html>
