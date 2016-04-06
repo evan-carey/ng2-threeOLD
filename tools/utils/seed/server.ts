@@ -48,6 +48,8 @@ export function serveProd() {
 
   server.use(APP_BASE, serveStatic(root));
 
+  server.use(require('prerender-node').set('prerenderToken', 'RA8E8LMrL59DDPin2Weg'));
+
   server.use(fallback('index.html', { root }));
 
   server.listen(process.env.PORT || PORT, () =>
@@ -59,9 +61,11 @@ export function serveProd() {
 export function serveHeroku() {
     let root = resolve(process.cwd(), PROD_DEST);
     let server = express();
-    
+
     server.use(APP_BASE, serveStatic(root));
-    
+
+    server.use(require('prerender-node').set('prerenderToken', 'RA8E8LMrL59DDPin2Weg'));
+
     server.use(fallback('index.html', { root }));
     
     server.listen(process.env.PORT || PORT);
