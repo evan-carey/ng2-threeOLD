@@ -17,6 +17,4 @@ import {NameListService} from '../../shared/services/name-list.service';
   { path: '/',      name: 'Home',  component: HomeComponent  },
   { path: '/about', name: 'About', component: AboutComponent }
 ])
-export class AppComponent {
-  window.prerenderReady = true;
-}
+export class AppComponent {}
