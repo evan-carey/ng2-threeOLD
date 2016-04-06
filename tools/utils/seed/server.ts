@@ -50,8 +50,19 @@ export function serveProd() {
 
   server.use(fallback('index.html', { root }));
 
-  server.listen(PORT, () =>
+  server.listen(process.env.PORT || PORT, () =>
     openResource('http://localhost:' + PORT + APP_BASE)
   );
 
 };
+
+export function serveHeroku() {
+    let root = resolve(process.cwd(), PROD_DEST);
+    let server = express();
+    
+    server.use(APP_BASE, serveStatic(root));
+    
+    server.use(fallback('index.html', { root }));
+    
+    server.listen(process.env.PORT || PORT);
+}
