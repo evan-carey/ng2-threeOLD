@@ -1,1 +1,1 @@
-web: npm run-script serve.prod
+web: npm run-script server.prod
