@@ -12,7 +12,7 @@ import {NameListService} from '../../shared/services/name-list.service';
 })
 export class HomeComponent {
   newName: string;
-  constructor(public nameListService: NameListService) {}
+  constructor(public nameListService: NameListService) { }
 
   /*
    * @param newname  any text as input.

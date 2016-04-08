@@ -8,4 +8,4 @@ import {ROUTER_DIRECTIVES} from 'angular2/router';
   styleUrls: ['./navbar.component.css'],
   directives: [ROUTER_DIRECTIVES]
 })
-export class NavbarComponent {}
+export class NavbarComponent { }
