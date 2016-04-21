@@ -45,7 +45,7 @@ export function main() {
 @Component({
   providers: [NameListService],
   selector: 'test-cmp',
-  template: '<sd-home></sd-home>',
+  template: '<home></home>',
   directives: [HomeComponent]
 })
 class TestComponent {}

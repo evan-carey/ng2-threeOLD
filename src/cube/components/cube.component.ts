@@ -9,17 +9,17 @@ export class CubeComponent {
 
   private renderer: THREE.WebGLRenderer;
   private scene: THREE.Scene;
-  private camera: THREE.PerspectiveCamera;
+  public camera: THREE.PerspectiveCamera;
   private mesh: THREE.Mesh;
   private shaderMaterial: THREE.ShaderMaterial;
   private frame: number = 0;
 
   constructor() {
-    var width: number = 500;
-    var height: number = 500;
+    var width: number = window.innerWidth;
+    var height: number = window.innerHeight;
 
     // create renderer
-    this.renderer = new THREE.WebGLRenderer({alpha: true});
+    this.renderer = new THREE.WebGLRenderer({ alpha: true });
     // set dimensions
     this.renderer.setSize(width, height);
     this.renderer.setClearColor(0x000000, 1);
@@ -224,7 +224,7 @@ export class CubeComponent {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
-  onMouseMove(event) {
+  onMouseMove(event: Event) {
     event.preventDefault();
   }
 

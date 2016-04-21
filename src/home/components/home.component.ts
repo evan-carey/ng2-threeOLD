@@ -4,7 +4,7 @@ import {CubeComponent} from '../../cube/components/cube.component';
 import {NameListService} from '../../shared/services/name-list.service';
 
 @Component({
-  selector: 'sd-home',
+  selector: 'home',
   moduleId: module.id,
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],

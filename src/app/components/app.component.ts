@@ -7,7 +7,7 @@ import {AboutComponent} from '../../about/components/about.component';
 import {NameListService} from '../../shared/services/name-list.service';
 
 @Component({
-  selector: 'sd-app',
+  selector: 'app',
   viewProviders: [NameListService],
   moduleId: module.id,
   templateUrl: './app.component.html',
