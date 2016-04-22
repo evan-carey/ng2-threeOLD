@@ -7,9 +7,9 @@ import {Component} from 'angular2/core';
 })
 export class CubeComponent {
 
+  public camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
   private scene: THREE.Scene;
-  public camera: THREE.PerspectiveCamera;
   private mesh: THREE.Mesh;
   private shaderMaterial: THREE.ShaderMaterial;
   private frame: number = 0;
