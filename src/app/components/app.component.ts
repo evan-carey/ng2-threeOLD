@@ -1,17 +1,23 @@
 import {Component} from 'angular2/core';
 import {ROUTER_DIRECTIVES, RouteConfig} from 'angular2/router';
+import {HTTP_PROVIDERS} from 'angular2/http';
 import {NavbarComponent} from './navbar.component';
 import {ToolbarComponent} from './toolbar.component';
 import {HomeComponent} from '../../home/components/home.component';
 import {AboutComponent} from '../../about/components/about.component';
 import {NameListService} from '../../shared/services/name-list.service';
+import {ShaderService} from '../../shared/services/shader.service';
 
 @Component({
   selector: 'app',
   viewProviders: [NameListService],
   moduleId: module.id,
   templateUrl: './app.component.html',
-  directives: [ROUTER_DIRECTIVES, NavbarComponent, ToolbarComponent]
+  directives: [ROUTER_DIRECTIVES, NavbarComponent, ToolbarComponent],
+  providers: [
+    HTTP_PROVIDERS,
+    ShaderService
+  ]
 })
 @RouteConfig([
   { path: '/', name: 'Home', component: HomeComponent },

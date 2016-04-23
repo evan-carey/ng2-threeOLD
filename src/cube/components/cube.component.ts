@@ -1,4 +1,5 @@
 import {Component} from 'angular2/core';
+import {ShaderType, Shader, ShaderService} from '../../shared/services/shader.service';
 
 @Component({
   selector: 'gl-cube',
@@ -14,7 +15,10 @@ export class CubeComponent {
   private shaderMaterial: THREE.ShaderMaterial;
   private frame: number = 0;
 
-  constructor() {
+  private vertexShader: Shader;
+  private fragmentShader: Shader;
+
+  constructor(private _shaderService: ShaderService) {
     var width: number = window.innerWidth;
     var height: number = window.innerHeight;
 
@@ -184,14 +188,16 @@ export class CubeComponent {
       }
     };
 
+    this.getShader();
+
     this.shaderMaterial = new THREE.ShaderMaterial({
       uniforms: uniforms,
       // attributes: attributes,
       defines: {
         USE_COLOR: colors
       },
-      vertexShader: document.getElementById('vert').textContent,
-      fragmentShader: document.getElementById('frag').textContent
+      vertexShader: this.vertexShader.text(),
+      fragmentShader: this.fragmentShader.text()
     });
 
     this.mesh = new THREE.Mesh(geometry, this.shaderMaterial);
@@ -216,6 +222,13 @@ export class CubeComponent {
     this.renderer.render(this.scene, this.camera);
 
     this.render();
+  }
+
+  getShader() {
+    this._shaderService.getShader(ShaderType.vert, '../../assets/shaders/cube.vert')
+      .subscribe(vert => this.vertexShader = vert);
+    this._shaderService.getShader(ShaderType.frag, '../../assets/shaders/cube.frag')
+      .subscribe(frag => this.fragmentShader = frag);
   }
 
   onWindowResize() {
