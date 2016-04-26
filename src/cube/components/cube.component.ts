@@ -8,15 +8,15 @@ import {ShaderType, Shader, ShaderService} from '../../shared/services/shader.se
 })
 export class CubeComponent {
 
-  public camera: THREE.PerspectiveCamera;
-  private renderer: THREE.WebGLRenderer;
-  private scene: THREE.Scene;
-  private mesh: THREE.Mesh;
-  private shaderMaterial: THREE.ShaderMaterial;
-  private frame: number = 0;
+  camera: THREE.PerspectiveCamera;
+  renderer: THREE.WebGLRenderer;
+  scene: THREE.Scene;
+  mesh: THREE.Mesh;
+  shaderMaterial: THREE.ShaderMaterial;
+  frame: number = 0;
 
-  private vertexShader: Shader;
-  private fragmentShader: Shader;
+  vertexShader: Shader;
+  fragmentShader: Shader;
 
   constructor(private _shaderService: ShaderService) {
     var width: number = window.innerWidth;
@@ -188,47 +188,58 @@ export class CubeComponent {
       }
     };
 
-    this.getShader();
+    this._shaderService.getShader(ShaderType.vert, '../../assets/shaders/cube.vert').then(function (vert) {
+      return vert;
+    }).then(function (vert) {
+      this.vertexShader = vert;
+      this._shaderService.getShader(ShaderType.frag, '../../assets/shaders/cube.frag').then(function (frag) {
 
-    this.shaderMaterial = new THREE.ShaderMaterial({
-      uniforms: uniforms,
-      // attributes: attributes,
-      defines: {
-        USE_COLOR: colors
-      },
-      vertexShader: this.vertexShader.text(),
-      fragmentShader: this.fragmentShader.text()
+        this.fragmentShader = frag;
+
+      this.shaderMaterial = new THREE.ShaderMaterial({
+        uniforms: uniforms,
+        // attributes: attributes,
+        defines: {
+          USE_COLOR: colors
+        },
+        vertexShader: this.vertexShader.text(),
+        fragmentShader: this.fragmentShader.text()
+      });
+
+      this.mesh = new THREE.Mesh(geometry, this.shaderMaterial);
+
+      this.scene.add(this.mesh);
+
+      window.addEventListener('resize', this.onWindowResize, false);
+      document.addEventListener('mousemove', this.onMouseMove, false);
+
+      // lighting
+      var ambientLight: THREE.AmbientLight = new THREE.AmbientLight(0x444444);
+      this.scene.add(ambientLight);
+
+      var light1: THREE.DirectionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+      light1.position.set(3000, 3000, 3000);
+      this.scene.add(light1);
+
+      var light2: THREE.DirectionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+      light2.position.set(-3000, 3000, 1000);
+      this.scene.add(light2);
+
+      this.renderer.render(this.scene, this.camera);
+
+      this.render();
+      });
     });
 
-    this.mesh = new THREE.Mesh(geometry, this.shaderMaterial);
-
-    this.scene.add(this.mesh);
-
-    window.addEventListener('resize', this.onWindowResize, false);
-    document.addEventListener('mousemove', this.onMouseMove, false);
-
-    // lighting
-    var ambientLight: THREE.AmbientLight = new THREE.AmbientLight(0x444444);
-    this.scene.add(ambientLight);
-
-    var light1: THREE.DirectionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-    light1.position.set(3000, 3000, 3000);
-    this.scene.add(light1);
-
-    var light2: THREE.DirectionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
-    light2.position.set(-3000, 3000, 1000);
-    this.scene.add(light2);
-
-    this.renderer.render(this.scene, this.camera);
-
-    this.render();
   }
 
-  getShader() {
-    this._shaderService.getShader(ShaderType.vert, '../../assets/shaders/cube.vert')
-      .subscribe(vert => this.vertexShader = vert);
-    this._shaderService.getShader(ShaderType.frag, '../../assets/shaders/cube.frag')
-      .subscribe(frag => this.fragmentShader = frag);
+  private getShader(_vert: Shader, _frag: Shader) {
+    // this._shaderService.getShader(ShaderType.vert, '../../assets/shaders/cube.vert')
+    //   .subscribe(vert => this.vertexShader = vert);
+    // this._shaderService.getShader(ShaderType.frag, '../../assets/shaders/cube.frag')
+    //   .subscribe(frag => this.fragmentShader = frag);
+
+
   }
 
   onWindowResize() {

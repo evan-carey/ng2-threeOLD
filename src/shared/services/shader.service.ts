@@ -19,6 +19,7 @@ export class ShaderService {
         return this._http.get(path)
             .map((response: Response) => new Shader(type, response.text()))
             .do(shader => console.log(shader))
+            .toPromise()
             .catch(this.handleError);
     }
 
