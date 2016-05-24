@@ -1,10 +1,10 @@
+import * as chalk from 'chalk';
+import { existsSync, lstatSync, readdirSync } from 'fs';
 import * as gulp from 'gulp';
 import * as util from 'gulp-util';
-import * as chalk from 'chalk';
 import * as isstream from 'isstream';
-import {readdirSync, existsSync, lstatSync} from 'fs';
-import {join} from 'path';
-
+import { join } from 'path';
+import * as tildify from 'tildify';
 
 export function loadTasks(path: string): void {
   util.log('Loading tasks folder', chalk.yellow(path));
@@ -13,7 +13,7 @@ export function loadTasks(path: string): void {
 
 function registerTask(taskname: string, path: string): void {
   const TASK = join(path, taskname);
-  util.log('Registering task', chalk.yellow(TASK));
+  util.log('Registering task', chalk.yellow(tildify(TASK)));
 
   gulp.task(taskname, (done: any) => {
     const task = require(TASK);
@@ -43,7 +43,7 @@ function readDir(root: string, cb: (taskname: string) => void) {
       let file = files[i];
       let curPath = join(path, file);
       if (lstatSync(curPath).isFile() && /\.ts$/.test(file)) {
-        let taskname = file.replace(/(\.ts)/, '');
+        let taskname = file.replace(/\.ts$/, '');
         cb(taskname);
       }
     }

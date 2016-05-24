@@ -1,10 +1,11 @@
 import * as express from 'express';
 import * as fallback from 'express-history-api-fallback';
 import * as openResource from 'open';
+import { resolve } from 'path';
 import * as serveStatic from 'serve-static';
+
 import * as codeChangeTool from './code_change_tools';
-import {resolve} from 'path';
-import {APP_BASE, PROD_DEST, PORT, DOCS_DEST, DOCS_PORT, COVERAGE_PORT} from '../../config';
+import { APP_BASE, COVERAGE_PORT, DOCS_DEST, DOCS_PORT, PORT, PROD_DEST } from '../../config';
 
 
 export function serveSPA() {
@@ -48,25 +49,10 @@ export function serveProd() {
 
   server.use(APP_BASE, serveStatic(root));
 
-  server.use(require('prerender-node').set('prerenderToken', 'RA8E8LMrL59DDPin2Weg'));
-
   server.use(fallback('index.html', { root }));
 
-  server.listen(process.env.PORT || PORT, () =>
+  server.listen(PORT, () =>
     openResource('http://localhost:' + PORT + APP_BASE)
   );
 
 };
-
-export function serveHeroku() {
-    let root = resolve(process.cwd(), PROD_DEST);
-    let server = express();
-
-    server.use(APP_BASE, serveStatic(root));
-
-    server.use(require('prerender-node').set('prerenderToken', 'RA8E8LMrL59DDPin2Weg'));
-
-    server.use(fallback('index.html', { root }));
-    
-    server.listen(process.env.PORT || PORT);
-}
